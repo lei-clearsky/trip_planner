@@ -36,7 +36,39 @@ function initialize_gmaps() {
         opts.position = new google.maps.LatLng(location[0], location[1]);
         opts.map = map;
         var marker = new google.maps.Marker(opts);
+        marker.setAnimation(google.maps.Animation.DROP);
     }
+    // test map display
+    // call display hotel on map function
+ /*
+    var displayHotelsOnMap = function(){
+      var hotels = [];
+      $('#selectHotels').on('change', function() {
+        var selectedHotel = $(this).val();
+        var selectedHotelLocation;
+        all_hotels.forEach(function(hotel) {
+          if (hotel['name'] == selectedHotel){
+            selectedHotelLocation = hotel['place'][0]['location'];
+            console.log(selectedHotelLocation);
+          }
+        });
+            
+        // create a black star
+        var blackStar = {
+            path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
+            fillColor: 'black',
+            fillOpacity: 1,
+            scale: 0.2
+        };
+
+        drawLocation(selectedHotelLocation, {
+          icon: blackStar
+        })
+      }); 
+    }
+    displayHotelsOnMap();
+*/ 
+    // end map display test 
     drawLocation(hotelLocation, {
         // credit to: Matthias Stasiak https://mapicons.mapsmarker.com/author/matthias.stasiak/
         icon: '/images/lodging_0star.png'
@@ -45,6 +77,7 @@ function initialize_gmaps() {
         drawLocation(loc, {
             // credit to: Nico Mollet https://mapicons.mapsmarker.com/author/nico.mollet/
             icon: '/images/restaurant.png'
+            
         });
     });
     thingToDoLocations.forEach(function (loc) {

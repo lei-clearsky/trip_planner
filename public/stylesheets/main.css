@@ -61,6 +61,8 @@
     width: calc(100% - 30px); }
   #control-panel .itinerary-item > .remove {
     width: 30px; }
+#control-panel .append-days {
+  display: inline; }
 #control-panel .day-btn {
   border-width: 2px;
   width: 30px;

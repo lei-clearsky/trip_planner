@@ -16,20 +16,20 @@ var placeSchema = new Schema({
 
 var hotelSchema = new Schema({
 	name: String,
-	place: String,
+	place: [placeSchema],
 	num_stars: { type: Number, min: 1, max: 5},
 	amenities: String
 });
 
 var thingToDoSchema = new Schema ({
 	name: String,
-	place: String,
+	place: [placeSchema],
 	age_range: String
 });
 
 var restaurantSchema = new Schema ({
 	name: String,
-	palce: String,
+	place: [placeSchema],
 	cuisine: String,
 	price: { type: Number, min: 1, max: 5 }
 });
