@@ -249,6 +249,8 @@ $(document).ready(function() {
       }
       removeMarkers();
       setMarkers();
+    }else{
+      removeMarkers();
     }
   });
 
