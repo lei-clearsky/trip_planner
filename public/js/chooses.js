@@ -38,8 +38,9 @@ $(document).ready(function() {
   }
 
   var removeMarker = function(locationName) {
+    console.log(currentDayMarkers);
     currentDayMarkers.forEach(function(marker, index){
-      if (marker.title = locationName) {
+      if (marker.title + 'x'  == locationName) {
         marker.setMap(null);
         // remove from currentDayMarkers
         currentDayMarkers.splice(index, 1);
@@ -90,6 +91,7 @@ $(document).ready(function() {
   var addDayActivity = function( listID, selectName, listName) {
     if ($('.day-btn').index()) {
       $('.append-days').append('<button class="btn btn-circle day-btn">' + countDays + '</button>')
+      $('.day-btn').addClass('current-day');
       countDays++;
     }
     $(listID).append('<div class="itinerary-item"><span class="title">' + $(selectName).val() + '</span><span class="remove"><button class="btn btn-danger btn-xs btn-circle pull-right">x</button></span></div>');
@@ -114,6 +116,8 @@ $(document).ready(function() {
     // adds day 1 button for first activity added
     if ($('.day-btn').index()) {
       $('.append-days').append('<button class="btn btn-circle day-btn">' + countDays + '</button>')
+      $('.day-btn').addClass('current-day');
+      $('#itin-day').html(currentDay);
       countDays++;
     }
     $('#listHotels').append('<div class="itinerary-item"><span class="title">' + $('#selectHotels').val() + '</span><span class="remove"><button class="btn btn-danger btn-xs btn-circle pull-right">x</button></span></div>');
@@ -139,6 +143,9 @@ $(document).ready(function() {
 
     if ($('.day-btn').index()) {
       $('.append-days').append('<button class="btn btn-circle day-btn">' + countDays + '</button>')
+      $('.day-btn').addClass('current-day');
+      $('#itin-day').html(currentDay);
+
       countDays++;
     }
     $('#listRestaurants').append('<div class="itinerary-item"><span class="title">' + $('#selectRestaurants').val() + '</span><span class="remove"><button class="btn btn-danger btn-xs btn-circle pull-right">x</button></span></div>');
@@ -164,6 +171,9 @@ $(document).ready(function() {
 
     if ($('.day-btn').index()) {
       $('.append-days').append('<button class="btn btn-circle day-btn">' + countDays + '</button>')
+      $('.day-btn').addClass('current-day');
+      $('#itin-day').html(currentDay);
+    
       countDays++;
     }
     $('#listThingsToDo').append('<div class="itinerary-item"><span class="title">' + $('#selectThingsToDo').val() + '</span><span class="remove"><button class="btn btn-danger btn-xs btn-circle pull-right">x</button></span></div>');
@@ -182,6 +192,7 @@ $(document).ready(function() {
     };
     currentDayActivities[currentDay]['thingsToDo'].push(thingsToDoData);
     drawLocation(selectedThingsToDoLocation, {icon: '/images/star-3.png', title: selectedThingsToDo})
+    console.log(currentDayMarkers);
   })
 
   // search object to remove function
@@ -204,6 +215,7 @@ $(document).ready(function() {
       var removedObject = $(this).parent()[0]['innerText'];
       searchObject('hotels', removedObject);
       removeMarker(removedObject);
+      console.log(removedObject);
   });
   $('#listRestaurants').delegate('.remove', 'click', function () {
       $(this).parent().remove();
@@ -217,6 +229,17 @@ $(document).ready(function() {
       searchObject('thingsToDo', removedObject);
       removeMarker(removedObject);
    });
+  
+  // remove day
+  $('#day-title .remove').on('click', function(){
+    var removeDay = $(this).siblings('#itin-day').text();
+    delete currentDayActivities[removeDay];
+    var removeIndex = parseInt(removeDay) - 1;
+    $('#itin-day').html(removeIndex);
+
+    $('.append-days .day-btn').eq(removeIndex).remove();
+    $('.append-days .day-btn').eq(removeIndex-1).trigger('click');
+  });
 
   //add day button
   $("#itinButton").on("click", function() {
@@ -230,6 +253,8 @@ $(document).ready(function() {
     $(this).addClass('current-day');
 
     currentDay = $(this).text();
+    $('#itin-day').html(currentDay);
+
     $('#listHotels, #listRestaurants, #listThingsToDo').html('');
     if(currentDayActivities[currentDay]) {
       if(currentDayActivities[currentDay]['hotels']) {
