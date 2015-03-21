@@ -4,6 +4,7 @@ $(document).ready(function() {
   var currentDay = 1;
   var currentDayActivities = {};
   var currentDayMarkers = [];
+  $('#day-title').hide();
   // map
   // initialize new google maps LatLng object
   var myLatlng = new google.maps.LatLng(40.705786,-74.007672);
@@ -88,38 +89,49 @@ $(document).ready(function() {
   }
 
   // adds the selected dropdown item to the itinerary (Hotels, Restaurants, and Things To Do)
-  var addDayActivity = function( listID, selectName, listName) {
+  // var addDayActivity = function( listID, selectName, listName) {
+  //   if ($('.day-btn').index()) {
+  //     $('.append-days').append('<button class="btn btn-circle day-btn">' + countDays + '</button>')
+  //     $('.day-btn').addClass('current-day');
+  //     countDays++;
+  //   }
+  //   $(listID).append('<div class="itinerary-item"><span class="title">' + $(selectName).val() + '</span><span class="remove"><button class="btn btn-danger btn-xs btn-circle pull-right">x</button></span></div>');
+  //   if (currentDayActivities[currentDay] === undefined) {
+  //     currentDayActivities[currentDay] = {};
+  //     currentDayActivities[currentDay][listName] = [];
+  //   }
+  //   else if (currentDayActivities[currentDay][listName] === undefined){
+  //     currentDayActivities[currentDay][listName] = [];
+  //   }
+  //   var selectedThingsToDo =  $(selectName).val();
+  //   var selectedThingsToDoLocation = findLocation(all_things_to_do, selectedThingsToDo);
+  //   var thingsToDoData = {
+  //     name: selectedThingsToDo,
+  //     location: selectedThingsToDoLocation
+  //   };
+  //   currentDayActivities[currentDay][listName].push(thingsToDoData);
+  // }
+
+  var addFirstDay = function() {
     if ($('.day-btn').index()) {
       $('.append-days').append('<button class="btn btn-circle day-btn">' + countDays + '</button>')
-      $('.day-btn').addClass('current-day');
+      $('.day-btn:first-child').addClass('current-day');
+      $('#itin-day').html(currentDay);
+      $('#day-title').show();
       countDays++;
     }
-    $(listID).append('<div class="itinerary-item"><span class="title">' + $(selectName).val() + '</span><span class="remove"><button class="btn btn-danger btn-xs btn-circle pull-right">x</button></span></div>');
-    if (currentDayActivities[currentDay] === undefined) {
-      currentDayActivities[currentDay] = {};
-      currentDayActivities[currentDay][listName] = [];
+  }
+
+  var removeFirstDay = function() {
+    if (countDays == 0) {
+      $('#day-title').hide();
     }
-    else if (currentDayActivities[currentDay][listName] === undefined){
-      currentDayActivities[currentDay][listName] = [];
-    }
-    var selectedThingsToDo =  $(selectName).val();
-    var selectedThingsToDoLocation = findLocation(all_things_to_do, selectedThingsToDo);
-    var thingsToDoData = {
-      name: selectedThingsToDo,
-      location: selectedThingsToDoLocation
-    };
-    currentDayActivities[currentDay][listName].push(thingsToDoData);
   }
 
   $('#buttonHotels').on("click", function() {
     //addDayActivity('#listHotels', '#selectHotels', 'hotels');
     // adds day 1 button for first activity added
-    if ($('.day-btn').index()) {
-      $('.append-days').append('<button class="btn btn-circle day-btn">' + countDays + '</button>')
-      $('.day-btn').addClass('current-day');
-      $('#itin-day').html(currentDay);
-      countDays++;
-    }
+    addFirstDay();
     $('#listHotels').append('<div class="itinerary-item"><span class="title">' + $('#selectHotels').val() + '</span><span class="remove"><button class="btn btn-danger btn-xs btn-circle pull-right">x</button></span></div>');
     if (currentDayActivities[currentDay] === undefined) {
       currentDayActivities[currentDay] = {};
@@ -233,16 +245,32 @@ $(document).ready(function() {
   // remove day
   $('#day-title .remove').on('click', function(){
     var removeDay = $(this).siblings('#itin-day').text();
-    delete currentDayActivities[removeDay];
-    var removeIndex = parseInt(removeDay) - 1;
-    $('#itin-day').html(removeIndex);
+    Object.getOwnPropertyNames(currentDayActivities[removeDay]).forEach(function(prop) {
+      delete currentDayActivities[removeDay][prop];
+    });
+    $('.append-days .day-btn').eq(parseInt(removeDay)-1).trigger('click');
+    
+  });
 
-    $('.append-days .day-btn').eq(removeIndex).remove();
-    $('.append-days .day-btn').eq(removeIndex-1).trigger('click');
+  // remove day button
+  $('#itinButtonRemove').on('click', function(){
+    if ($('.append-days .day-btn:last-child')) {
+      var removeDay = $('.append-days .day-btn:last-child').text();
+      delete currentDayActivities[removeDay];
+      $('.append-days .day-btn:last-child').remove();
+      $('.append-days .day-btn:last-child').trigger('click');
+    } else {
+      delete currentDayActivities[1];
+      $('#listHotels, #listRestaurants, #listThingsToDo').html('');
+    }
+    countDays--;
+    console.log(countDays)
+    removeFirstDay();
+
   });
 
   //add day button
-  $("#itinButton").on("click", function() {
+  $("#itinButtonAdd").on("click", function() {
     $('.append-days').append('<button class="btn btn-circle day-btn">' + countDays + '</button>')
     countDays++;
   })
